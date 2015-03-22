@@ -1,0 +1,47 @@
+<div class='field'>
+    <div class='name'>
+        <label for='custom-settings'>
+            Видимость в каталоге
+        </label>
+    </div>
+
+    <div class='value no-shift'>
+        <label>
+            <input type='checkbox' value="1" name='show_in_catalog' {if $visible_check}checked{/if}> Отображать категорию в Каталоге
+            <span class='hint'>Включение этой настройки позволяет изменить видимость категории в Каталоге</span>
+        </label>
+    </div>
+</div>
+
+<div class='field'>
+    <div class='name'>
+        <label for='custom-settings'>
+            Картинка для каталога
+        </label>
+    </div>
+
+    <div class='value no-shift'>
+            Выберите картинку:
+            <input type="file" name="fileToUpload" id="fileToUpload" accept=" image/*,image/jpeg">
+        {if $image != ''}
+            Картинка уже загружена
+            <button onclick="deleteCategory({$id_category});">
+
+                Удалить картинку</button>
+        {/if}
+    </div>
+</div>
+
+<script>
+    function deleteCategory(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/subcat/',
+            dataType: 'json',
+            data: 'id='+id,
+            success: function(data, textStatus, jqXHR) {
+                //success
+            }
+        });
+    }
+</script>
