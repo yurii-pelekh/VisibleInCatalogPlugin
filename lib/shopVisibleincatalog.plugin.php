@@ -55,9 +55,11 @@ class shopVisibleincatalogPlugin extends shopPlugin
 
         $data = is_null($file_name) ?
             array(
+                'category_id' => $id_category,
                 'in_catalog' => $in_catalog
             ) :
             array(
+                'category_id' => $id_category,
                 'in_catalog' => $in_catalog,
                 'image' => $file_name
             );
@@ -84,6 +86,14 @@ class shopVisibleincatalogPlugin extends shopPlugin
 
         waFiles::delete($file_path);
         $model->updateById($category['id'], array('image' => ''));
+    }
+
+    public static function sayHello()
+    {
+        $model = new shopCategoryImageModel();
+        $topCategories = $model->getVisibleTopCategoriesInfo();
+
+        $x = 10;
     }
 }
 
