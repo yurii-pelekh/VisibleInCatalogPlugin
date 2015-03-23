@@ -93,7 +93,15 @@ class shopVisibleincatalogPlugin extends shopPlugin
         $model = new shopCategoryImageModel();
         $topCategories = $model->getVisibleTopCategoriesInfo();
 
-        $x = 10;
+        $result = array();
+        foreach($topCategories as $topCat) {
+            $subCategories = $model->getVisibleSubCategoriesInfo($topCat['id']);
+            
+            if(count($subCategories) > 0)
+                $result[$topCat['id']] = $subCategories;
+        }
+
+        return $result;
     }
 }
 

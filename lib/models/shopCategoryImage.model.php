@@ -26,6 +26,13 @@ class shopCategoryImageModel extends waModel
                                 AND shop_category.id = shop_category_images.category_id
                                 AND shop_category_images.in_catalog='1'", array('id' => $id_parent));
         $data = $result->fetchAll();
+
+//        foreach($data as $item) {
+//            if($item['image'] != '') {
+//                $item['image'] =  wa()->getDataPath('data/catalog/', true).$data['image'];
+//            }
+//        }
+
         return $data;
     }
 }
