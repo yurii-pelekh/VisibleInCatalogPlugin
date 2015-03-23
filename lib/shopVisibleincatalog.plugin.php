@@ -95,12 +95,11 @@ class shopVisibleincatalogPlugin extends shopPlugin
 
         $result = array();
         foreach($topCategories as $topCat) {
-            $subCategories = $model->getVisibleSubCategoriesInfo($topCat['id']);
+            $subCategories = $model->getVisibleSubCategoriesInfo($topCat['id'], $topCat['url']);
 
             if(count($subCategories) > 0)
                 $result[$topCat['name']] = $subCategories;
         }
-
         return $result;
     }
 }
