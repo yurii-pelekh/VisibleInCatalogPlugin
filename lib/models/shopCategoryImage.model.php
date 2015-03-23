@@ -21,17 +21,18 @@ class shopCategoryImageModel extends waModel
 
     public function getVisibleSubCategoriesInfo($id_parent)
     {
-        $result = $this->query("SELECT shop_category.id, shop_category.name, shop_category.url, shop_category_images.image FROM shop_category_images, shop_category
+        $result = $this->query("SELECT shop_category.id, shop_category.name, shop_category.full_url, shop_category_images.image FROM shop_category_images, shop_category
                                 WHERE shop_category.parent_id = i:id
                                 AND shop_category.id = shop_category_images.category_id
                                 AND shop_category_images.in_catalog='1'", array('id' => $id_parent));
         $data = $result->fetchAll();
 
-//        foreach($data as $item) {
-//            if($item['image'] != '') {
-//                $item['image'] =  wa()->getDataPath('data/catalog/', true).$data['image'];
-//            }
-//        }
+        //full image path
+        foreach ($data as $key => $item) {
+            if ($item['image'] != '') {
+                $data[$key]['image'] = '/wa-data/public/shop/data/catalog/' . $data[$key]['image'];
+            }
+        }
 
         return $data;
     }

@@ -88,7 +88,7 @@ class shopVisibleincatalogPlugin extends shopPlugin
         $model->updateById($category['id'], array('image' => ''));
     }
 
-    public static function sayHello()
+    public static function getCategories()
     {
         $model = new shopCategoryImageModel();
         $topCategories = $model->getVisibleTopCategoriesInfo();
@@ -96,9 +96,9 @@ class shopVisibleincatalogPlugin extends shopPlugin
         $result = array();
         foreach($topCategories as $topCat) {
             $subCategories = $model->getVisibleSubCategoriesInfo($topCat['id']);
-            
+
             if(count($subCategories) > 0)
-                $result[$topCat['id']] = $subCategories;
+                $result[$topCat['name']] = $subCategories;
         }
 
         return $result;
