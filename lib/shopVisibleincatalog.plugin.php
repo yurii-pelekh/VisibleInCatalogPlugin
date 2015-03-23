@@ -49,17 +49,18 @@ class shopVisibleincatalogPlugin extends shopPlugin
     public function on_category_save($params)
     {
         $file_name = $this->uploadFile();
-        $file_name = is_null($file_name) ? '' : $file_name;
-
         $in_catalog = waRequest::post('show_in_catalog');
         $in_catalog =  is_null($in_catalog)? 0 : 1;
-
         $id_category = $params['id'];
-        $data = array(
-            'category_id' => $id_category,
-            'in_catalog' => $in_catalog,
-            'image' => $file_name
-        );
+
+        $data = is_null($file_name) ?
+            array(
+                'in_catalog' => $in_catalog
+            ) :
+            array(
+                'in_catalog' => $in_catalog,
+                'image' => $file_name
+            );
 
         $model = new shopCategoryImageModel();
         $category = $model->getByCategoryId($id_category);
