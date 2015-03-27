@@ -21,28 +21,62 @@
     </div>
 
     <div class='value no-shift'>
-            Выберите картинку:
-            <input type="file" name="fileToUpload" id="fileToUpload" accept=" image/*,image/jpeg">
+        Выберите картинку:
+        <input type="file" name="fileToUpload" id="fileToUpload" accept=" image/*,image/jpeg">
         {if $image != ''}
-            <br><br>
-            Картинка уже загружена
-            <button onclick="deleteCategory({$id_category});">
+        <br><br>
+        Картинка уже загружена
+        <button onclick="deleteCategory({$id_category});">
 
-                Удалить картинку</button>
+            Удалить картинку</button>
+
         {/if}
     </div>
 </div>
 
+<div class='field'>
+    <div class='name'>
+        <label for='custom-settings'>
+            Видимость в правом меню
+        </label>
+    </div>
+
+    <div class='value no-shift'>
+        <label>
+            <input type='checkbox' value="1" name='show_in_right_menu' {if not $in_right_menu or $in_right_menu==1}checked{/if}> Показывать в правом меню
+            <span class='hint'>Включение этой настройки позволяет изменить видимость в правом меню сайта</span>
+        </label>
+    </div>
+</div>
+
+<div class='field'>
+    <div class='name'>
+        <label for='custom-settings'>
+            Видимость в свернутом виде
+        </label>
+    </div>
+
+    <div class='value no-shift'>
+        <label>
+            <input type='checkbox' value="1" name='show_in_convolute' {if $in_convolute}checked{/if}> Показывать в свернутом виде
+            <span class='hint'>Включение этой настройки позволяет отображать категории в свернутом виде </span>
+        </label>
+    </div>
+</div>
+
+
 <script>
     function deleteCategory(id) {
+
         $.ajax({
             type: 'POST',
             url: '/subcat/',
             dataType: 'json',
-            data: 'id='+id,
+            data: 'delid='+id,
             success: function(data, textStatus, jqXHR) {
                 //success
             }
         });
+
     }
 </script>

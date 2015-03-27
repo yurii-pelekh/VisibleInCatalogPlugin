@@ -4,38 +4,8 @@ class shopCategoryImageModel extends waModel
 {
     protected $table = 'shop_category_images';
 
-    public function getByCategoryId($category_id)
-    {
-        return $this->getByField('category_id', $category_id);
-    }
-
-    public function getVisibleTopCategoriesInfo()
-    {
-        $result = $this->query("SELECT shop_category.id, shop_category.name, shop_category.full_url
-                                FROM shop_category_images, shop_category
-                                WHERE shop_category_images.in_catalog='1'
-                                AND shop_category_images.category_id = shop_category.id
-                                AND shop_category.depth='0'");
-        $data = $result->fetchAll();
-        return $data;
-    }
-
-    public function getVisibleSubCategoriesInfo($id_parent, $url_parrent)
-    {
-        $result = $this->query("SELECT shop_category.id, shop_category.name, shop_category.full_url, shop_category_images.image
-                                FROM shop_category_images, shop_category
-                                WHERE shop_category.parent_id = i:id
-                                AND shop_category.id = shop_category_images.category_id
-                                AND shop_category_images.in_catalog='1'", array('id' => $id_parent));
-        $data = $result->fetchAll();
-
-        $data = $this->reformatFields($data, $url_parrent);
-
-        return $data;
-    }
-
     /**
-     * buildRightFields
+     * reformatFields
      *
      * Function reformats fields such as image, full_url in order to use them in html-page
      *
@@ -52,5 +22,37 @@ class shopCategoryImageModel extends waModel
             }
         }
         return $data_array;
+    }
+
+    public function getByCategoryId($category_id)
+    {
+        return $this->getByField('category_id', $category_id);
+    }
+
+    public function getVisibleTopCategoriesInfo()
+    {
+        $result = $this->query("SELECT c.id, c.name, c.full_url
+                                FROM shop_category c
+                                INNER JOIN shop_category_images i
+                                ON i.category_id = c.id
+                                WHERE c.depth='0'
+                                AND i.in_catalog = '1'");
+        $data = $result->fetchAll();
+        return $data;
+    }
+
+    public function getVisibleSubCategoriesInfo($id_parent, $url_parrent)
+    {
+        $result = $this->query("SELECT c.id, c.name, c.full_url, i.image
+                                FROM shop_category c
+                                INNER JOIN shop_category_images i
+                                ON i.category_id = c.id
+                                WHERE c.parent_id = i:id
+                                AND i.in_catalog='1'", array('id' => $id_parent));
+        $data = $result->fetchAll();
+
+        $data = $this->reformatFields($data, $url_parrent);
+
+        return $data;
     }
 }

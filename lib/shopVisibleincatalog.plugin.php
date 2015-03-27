@@ -33,34 +33,41 @@ class shopVisibleincatalogPlugin extends shopPlugin
 
         $view = wa()->getView();
 
-        if(!is_null($category)) {
+        if (!is_null($category)) {
             $view->assign('image', $category['image']);
             $view->assign('visible_check', $category['in_catalog']);
-        }
-        else {
+            $view->assign('in_right_menu', $category['in_right_menu']);
+            $view->assign('in_convolute', $category['in_convolute']);
+        } else {
             $view->assign('image', '');
             $view->assign('visible_check', 0);
         }
         $view->assign('id_category', $id_category);
 
-        return $view->fetch(dirname(__FILE__).'/../templates/BackendCatDialog.html');
+        return $view->fetch(dirname(__FILE__) . '/../templates/BackendCatDialog.html');
     }
 
     public function on_category_save($params)
     {
         $file_name = $this->uploadFile();
         $in_catalog = waRequest::post('show_in_catalog');
-        $in_catalog =  is_null($in_catalog)? 0 : 1;
+        $in_right_menu = waRequest::post('show_in_right_menu');
+        $in_convolute = waRequest::post('show_in_convolute');
+        $in_catalog = is_null($in_catalog) ? 0 : 1;
         $id_category = $params['id'];
 
         $data = is_null($file_name) ?
             array(
                 'category_id' => $id_category,
+                'in_right_menu' => $in_right_menu,
+                'in_convolute' => $in_convolute,
                 'in_catalog' => $in_catalog
             ) :
             array(
                 'category_id' => $id_category,
                 'in_catalog' => $in_catalog,
+                'in_right_menu' => $in_right_menu,
+                'in_convolute' => $in_convolute,
                 'image' => $file_name
             );
 
@@ -68,10 +75,9 @@ class shopVisibleincatalogPlugin extends shopPlugin
         $category = $model->getByCategoryId($id_category);
 
         //determine if record already exists
-        if(is_null($category)) {
+        if (is_null($category)) {
             $model->insert($data);
-        }
-        else {
+        } else {
             $model->updateById($category['id'], $data);
         }
     }
@@ -82,9 +88,9 @@ class shopVisibleincatalogPlugin extends shopPlugin
         $category = $model->getByCategoryId($id_category);
 
         $directory_path = wa()->getDataPath('data/catalog/', true);
-        $file_path = $directory_path.$category['image'];
+        $file_path = $directory_path . $category['image'];
 
-        waFiles::delete($file_path);
+        unlink($file_path);
         $model->updateById($category['id'], array('image' => ''));
     }
 
@@ -94,13 +100,45 @@ class shopVisibleincatalogPlugin extends shopPlugin
         $topCategories = $model->getVisibleTopCategoriesInfo();
 
         $result = array();
-        foreach($topCategories as $topCat) {
+        foreach ($topCategories as $topCat) {
             $subCategories = $model->getVisibleSubCategoriesInfo($topCat['id'], $topCat['url']);
 
-            if(count($subCategories) > 0)
+            if (count($subCategories) > 0)
                 $result[$topCat['name']] = $subCategories;
+
+            $result[$topCat['name']]['top']['url'] = $topCat['full_url'];
         }
+
         return $result;
+    }
+
+    public static function getRightMenu($id)
+    {
+
+        $model = new shopCategoryImageModel();
+        $category = $model->getByCategoryId($id);
+        $exist = $category['in_right_menu'];
+
+        if ($exist == '' || $exist == 1) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public static function getConvolute($id)
+    {
+        $model = new shopCategoryImageModel();
+        $category = $model->getByCategoryId($id);
+        $exist = $category['in_convolute'];
+
+        if ($exist == 1) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }
 
